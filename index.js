@@ -6,10 +6,10 @@ const port = 3000;
 const API_URL = "https://secrets-api.appbrewery.com";
 
 //TODO 1: Fill in your values for the 3 types of auth.
-const yourUsername = "vishal257";
-const yourPassword = "vishal257";
-const yourAPIKey = "832a08d0-a3a3-41c3-a075-6a6140da7550";
-const yourBearerToken = "11cefd7c-02f2-410c-9e79-f03a8953651b";
+const yourUsername = "";
+const yourPassword = "";
+const yourAPIKey = "";
+const yourBearerToken = "";
 
 app.get("/", (req, res) => {
   res.render("index.ejs", { content: "API Response." });
@@ -51,17 +51,40 @@ app.get("/basicAuth", async (req, res) => {
   */
 });
 
-app.get("/apiKey", (req, res) => {
+app.get("/apiKey", async (req, res) => {
   //TODO 4: Write your code here to hit up the /filter endpoint
+  try{
+    const result = await axios.get(API_URL+"/filter?",{
+      params:{
+        score: 5,
+        apiKey: yourAPIKey
+      }
+    })
+    res.render("index.ejs",{content: JSON.stringify(result.data)})
+  }catch(error){
+    console.log(error.message)
+    res.status(404).send(error.message)
+  }
   //Filter for all secrets with an embarassment score of 5 or greater
   //HINT: You need to provide a query parameter of apiKey in the request.
 });
 
-app.get("/bearerToken", (req, res) => {
+app.get("/bearerToken", async (req, res) => {
   //TODO 5: Write your code here to hit up the /secrets/{id} endpoint
   //and get the secret with id of 42
   //HINT: This is how you can use axios to do bearer token auth:
   // https://stackoverflow.com/a/52645402
+  try{
+    const result = await axios.get(API_URL+"/secrets/42",{
+      headers:{
+        Authorization: `Bearer ${yourBearerToken}`
+      }
+    })
+    res.render("index.ejs",{content: JSON.stringify(result.data)})
+  }catch(error){
+    console.log(error.message)
+    res.status(404).send(error.message)
+  }
   /*
   axios.get(URL, {
     headers: { 
